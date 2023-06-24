@@ -2,6 +2,7 @@
 * TON contest June 2nd to June 25th, 2023
 * Submission by XPTeam
 * contacts: https://t.me/UltraNihilist
+* https://t.me/YANMSK
 
 ## Description
 This is a smart-contract voting tool that allows whitelisted users to vote without spending gas that utilizes the new **ECRECOVER** opcode in TVM. 
