@@ -12,32 +12,32 @@ test on v18.12.1
 npm install
 ```
 ## Create .env
-clone from env.example and paste your memonic instead of a template
-get 2 Ton from https://t.me/testgiver_ton_bot to address from your mnemonic
+* Clone from env.example and paste your memonic instead of a template
+* Get 2 Ton from https://t.me/testgiver_ton_bot to address from your mnemonic
 
 ## Set your unique parametrs to ballot.fc smartcomtract 
+1. Define ballot_id
 ```
 const slice ballot_id = "1"; 
 ```
-define ballot_id
+2. Define vote_count_model_selector as 
+ * 0 for Majority
+ * 1 for Soft majority
+ * 2 for Super majority
 
 ```
 const int vote_count_model_selector = 1;
 ```
-define vote_count_model_selector as 
-;; 0 for Majority
-;; 1 for Soft majority
-;; 2 for Super majority
+3. Define description
 
 ```
 const slice description = "0 gas ballot for TON contest";  
 ```
-define description
-
+4. Define admin address who pay gas amd insert votes from whitelist to ton smartcontract
 ```
 const slice admin_address = "EQBXpP9dhscDRSupkIlTM9XPE2aH8fiU3mRESthoq-kAPKm5"a;
 ```
-define admin address who pay gas amd insert votes from whitelist to ton smartcontract
+5. Define hash from vote yes msg and vote no msg
 
 ```
 ;; hash from 'vote yes 0 gas ballot 1 blockchain TON'
@@ -45,8 +45,6 @@ const int hash_yes = 0x4e7319163dd79765dc8d107b6b1e88398a52cc044aeb83b13d73c4c9d
 ;; hash from 'vote no 0 gas ballot 1 blockchain TON'
 const int hash_no = 0x4f9ff7568830010feccfa345803eea774465fe80c709ccca09ccf8858e146454;
 ```
-define hash from vote yes msg and vote no msg
-
 ## Compile ballot.fc to ballot.cell
 ```
 npx func-js stdlib.fc ballot.fc --boc ballot.cell
