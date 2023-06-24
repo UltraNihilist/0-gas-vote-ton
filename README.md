@@ -61,6 +61,8 @@ Written output files.
 ```
 npx ts-node address.ts
 ```
+get "Ballot already deployed" if contract to this address already deployed 
+
 ## Deploy ballot.cell to ton blockchain
 ```
 npx ts-node deploy.ts
