@@ -1,5 +1,5 @@
 # 0 gas  vote-ton
-Ton contest June 2nd to June 25th, 2023
+TON contest June 2nd to June 25th, 2023
 
 ## Check node version
 ```
@@ -13,7 +13,7 @@ npm install
 ```
 ## Create .env
 * Clone from env.example and paste your memonic instead of a template
-* Get 2 Ton from https://t.me/testgiver_ton_bot to address from your mnemonic
+* Get 2 TON test network tokens from https://t.me/testgiver_ton_bot to address from your mnemonic
 
 ## Set your unique parametrs to ballot.fc smartcomtract 
 1. Define ballot_id
@@ -33,7 +33,7 @@ const int vote_count_model_selector = 1;
 ```
 const slice description = "0 gas ballot for TON contest";  
 ```
-4. Define admin address who pay gas amd insert votes from whitelist to ton smartcontract
+4. Define admin address who will pay gas fees amd insert account addresses from whitelist to ton smartcontract
 ```
 const slice admin_address = "EQBXpP9dhscDRSupkIlTM9XPE2aH8fiU3mRESthoq-kAPKm5"a;
 ```
@@ -78,7 +78,7 @@ waiting for deploy transaction to confirm...
 waiting for deploy transaction to confirm...
 deploy transaction confirmed!
 ```
-snartcontract address recorded to file ballot.txt
+smartcontract address recorded to file ballot.txt
 
 ## Get smartcontract initial storage
 ```
@@ -98,15 +98,15 @@ ecr x2: 10
 ecr h: 10
 remainingBits: 0
 ```
-## Voter create private key and public key
-* For example we use https://www.bitaps.com/address
+## Voter creates private key and public key
+* For example we can https://www.bitaps.com/address
 ![Create pair keys](https://github.com/UltraNihilist/0-gas-vote-ton/blob/dc6f735ffbdfa9b413644aabd51ddd8977bbe944/screen02.jpg)
 * Click Generate private key and then click Load
 * Send public key to admin
 
-## Voter create signature from selected hash_yes or hash_no and send to admin
+## Voter creates signature from selected hash_yes or hash_no and sends it to admin
 * Voters copy hash_yes or hash_no
-* Using private key and any tool for secp256k1 ECDSA signing it, for example: https://www.bitaps.com/signature
+* Using private key and any tool for secp256k1 ECDSA sign it, for example: https://www.bitaps.com/signature
 ![Sign vote](https://github.com/UltraNihilist/0-gas-vote-ton/blob/dc6f735ffbdfa9b413644aabd51ddd8977bbe944/screen03.jpg)
 ![Vote yes signature](https://github.com/UltraNihilist/0-gas-vote-ton/blob/dc6f735ffbdfa9b413644aabd51ddd8977bbe944/screen04.jpg)
 ![Vote no signature](https://github.com/UltraNihilist/0-gas-vote-ton/blob/dc6f735ffbdfa9b413644aabd51ddd8977bbe944/screen05.jpg)
@@ -215,4 +215,7 @@ ecr h: 15
 remainingBits: 0
 ```
 
-Unfortunately ECRECOVER opcode return only status 0 on any hash, v, r, s, which verifed success by other tools
+Unfortunately ECRECOVER opcode returns only status 0 on any hash, v, r, s, which verifed success by other tools. It looks like a bug in the library as this is clearly not intended behaviour for this opcode 
+
+Conclusion:
+When ECRECOVER is fixed this tool can be used to let users to participate in voting without spending gas, only voting admin needs to spend gas. It can later be slightly modified to create a multi-signature wallet for TON or a more comprehensive voting tool.
