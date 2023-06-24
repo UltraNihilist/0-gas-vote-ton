@@ -1,5 +1,10 @@
 # 0 gas  vote-ton
 TON contest June 2nd to June 25th, 2023
+Submission by XPTeam
+contacts: https://t.me/UltraNihilist
+
+## Description
+This is a smart-contract voting tool that allows whitelisted users to vote without spending gas that utilizes the new **ECRECOVER** opcode in TVM. 
 
 ## Check node version
 ```
@@ -218,4 +223,4 @@ remainingBits: 0
 Unfortunately ECRECOVER opcode returns only status 0 on any hash, v, r, s, which verifed success by other tools. It looks like a bug in the library as this is clearly not intended behaviour for this opcode 
 
 Conclusion:
-When ECRECOVER is fixed this tool can be used to let users to participate in voting without spending gas, only voting admin needs to spend gas. It can later be slightly modified to create a multi-signature wallet for TON or a more comprehensive voting tool.
+When ECRECOVER is fixed this tool can be used to let users participate in voting without spending gas, only voting admin needs to spend gas. It can later be slightly modified to create a multi-signature wallet for TON or a more comprehensive voting tool.
