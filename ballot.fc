@@ -1,0 +1,151 @@
+const slice ballot_id = "22";  
+;; Vote count model selector
+;; 0 - Majority
+;; 1 - Soft majority
+;; 2 - Super majority
+const int vote_count_model_selector = 1;
+const slice description = "0 gas ballot for TON contest";  
+const slice admin_address = "EQBXpP9dhscDRSupkIlTM9XPE2aH8fiU3mRESthoq-kAPKm5"a;
+
+;; hash from 'vote yes 0 gas ballot 1 blockchain TON'
+const int hash_yes = 0x4e7319163dd79765dc8d107b6b1e88398a52cc044aeb83b13d73c4c9d672a9fb;
+;; hash from 'vote no 0 gas ballot 1 blockchain TON'
+const int hash_no = 0x4f9ff7568830010feccfa345803eea774465fe80c709ccca09ccf8858e146454;
+
+(int, int, int, int, int, cell) load_data() inline {
+  var ds = get_data().begin_parse();
+  return 
+    (ds~load_uint(64), ;; yes
+     ds~load_uint(64), ;; no
+     ds~load_uint(64), ;; total
+     ds~load_int(8),   ;; voting result
+     ds~load_uint(256), ;; whitelisted pubkey hash
+     ds~load_ref()     ;; y_data
+     );
+}
+
+() save_data(int yes, int no, int total, int voting_result, int wph, cell y_data) impure inline {
+  set_data(begin_cell()
+    .store_uint(yes, 64)
+    .store_uint(no, 64)
+    .store_uint(total, 64)
+    .store_int(voting_result, 8)
+    .store_uint(wph, 256)
+    .store_ref(y_data)
+    .end_cell());
+}
+
+int equal_slices (slice a, slice b) asm "SDEQ";
+int ecrecover (int hash, int v, int r, int s) asm "ECRECOVER";
+
+int calculate_votes(int yes, int no, int total, int selector) impure {
+    int passed = 0;
+		if (selector == 0) {
+			passed = (yes > no);
+		} 
+    if (selector == 1) {
+			passed = (yes * total * 10 >= total * total + no * (8 * total  + 20));
+		} 
+    if (selector == 2) {
+			passed = (yes * total * 3 >= total * total + no * (total + 6));
+		}
+		return passed;
+}
+
+() recv_internal(int msg_value, cell in_msg_full, slice in_msg_body) impure {
+if (in_msg_body.slice_empty?()) { ;; ignore empty messages
+    return ();
+}  
+slice cs = in_msg_full.begin_parse();
+var flags = cs~load_uint(4);
+if (flags & 1) { ;; ignore all bounced messages
+    return ();
+}
+slice sender_address = cs~load_msg_addr();
+throw_unless(401, equal_slices(sender_address, admin_address));
+int op = in_msg_body~load_uint(32);
+int query_id = in_msg_body~load_uint(64);
+int v = in_msg_body~load_uint(8);
+int r = in_msg_body~load_uint(256);
+int s = in_msg_body~load_uint(256);
+var (current_yes, current_no, current_total, current_voting_result, current_wph, current_y) = load_data();
+if (op == 1) { ;; vote yes
+      current_yes += 1;
+      current_total += 1;
+      current_voting_result = calculate_votes(current_yes, current_no, current_total, vote_count_model_selector);
+      int status = ecrecover(hash_yes, v, r, s);      
+      current_y = begin_cell()
+                  .store_int(status, 257) ;; status
+                  .store_uint(0xFF, 256) ;; h
+                  .store_uint(0xFF, 256) ;; x1
+                  .store_uint(0xF, 8)   ;; x2
+                  .end_cell();
+      save_data(current_yes, current_no, current_total, current_voting_result, current_wph, current_y);
+      return ();
+}
+if (op == 2) { ;; vote no
+      current_no += 1;
+      current_total += 1;
+      current_voting_result = calculate_votes(current_yes, current_no, current_total, vote_count_model_selector);
+      int status = ecrecover(hash_no, v, r, s);      
+      current_y = begin_cell()
+                  .store_int(status, 257) ;; status
+                  .store_uint(0xCC, 256) ;; h
+                  .store_uint(0xCC, 256) ;; x1
+                  .store_uint(0xC, 8)   ;; x2
+                  .end_cell();
+      save_data(current_yes, current_no, current_total, current_voting_result, current_wph, current_y);
+      return ();
+}
+if (op == 3) { ;; set voter
+      save_data(current_yes, current_no, current_total, current_voting_result, r, current_y);
+      return ();
+}
+throw(0xffff);
+}
+
+(int) get_yes_count() method_id {             ;; getter declaration - returns int as result
+var (current_yes, _, _, _, _, _) = load_data();  ;; call our read utility function to load value
+return current_yes; 
+}
+
+(int) get_no_count() method_id {             ;; getter declaration - returns int as result
+var (_, current_no, _, _, _, _) = load_data();  ;; call our read utility function to load value
+return current_no;
+}
+
+(int) get_voters_count() method_id {             ;; getter declaration - returns int as result
+var (_, _, current_total, _, _, _) = load_data();    ;; call our read utility function to load value
+return current_total;
+}
+
+(int) get_voting_result() method_id {                     ;; getter declaration - returns int as result
+var (_, _, _, current_voting_result, _, _) = load_data();     ;; call our read utility function to load value
+return current_voting_result;
+}
+
+(int) get_wph() method_id {                     ;; getter declaration - returns int as result
+var (_, _, _, _, current_wph, _) = load_data();     ;; call our read utility function to load value
+return current_wph;
+}
+
+(cell) get_y() method_id {                          ;; getter declaration - returns int as result
+var (_, _, _, _, _, current_y) = load_data();         ;; call our read utility function to load value
+return current_y;
+}
+
+int selector() method_id {    ;; getter declaration - returns int as result
+return vote_count_model_selector;
+}
+
+slice get_ballot_id() method_id {    ;; getter declaration - returns slice as result
+return ballot_id;
+}
+
+slice ballot_description() method_id {   ;; getter declaration - returns slice as result
+return description;
+}
+
+slice admin() method_id {   ;; getter declaration - returns slice as result
+return admin_address;
+}
