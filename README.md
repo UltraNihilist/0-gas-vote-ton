@@ -1,7 +1,7 @@
 # 0 gas  vote-ton
-TON contest June 2nd to June 25th, 2023
-Submission by XPTeam
-contacts: https://t.me/UltraNihilist
+* TON contest June 2nd to June 25th, 2023
+* Submission by XPTeam
+* contacts: https://t.me/UltraNihilist
 
 ## Description
 This is a smart-contract voting tool that allows whitelisted users to vote without spending gas that utilizes the new **ECRECOVER** opcode in TVM. 
