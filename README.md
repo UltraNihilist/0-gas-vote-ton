@@ -3,6 +3,7 @@
 * Submission by XPTeam
 * contacts: https://t.me/UltraNihilist
 * https://t.me/YANMSK
+* [Video Demo]([url](https://youtu.be/wX8f2n4uaLs))
 
 ## Description
 This is a smart-contract voting tool that allows whitelisted users to vote without spending gas that utilizes the new **ECRECOVER** opcode in TVM. 
